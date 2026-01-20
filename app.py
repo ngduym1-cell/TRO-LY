@@ -4,9 +4,9 @@ from docx import Document
 from io import BytesIO
 from docx.shared import Pt, Cm
 
-# ================== CẤU HÌNH TRANG ==================
+# ================== CẤU HÌNH ==================
 st.set_page_config(
-    page_title="Trợ lý giáo viên tiểu học (Không AI)",
+    page_title="Trợ lý GV tiểu học – Lời dẫn lên lớp",
     page_icon="📘",
     layout="centered"
 )
@@ -15,14 +15,14 @@ st.set_page_config(
 st.markdown("""
 <div style="text-align:center;">
     <h1>📘 TRỢ LÝ GIÁO VIÊN TIỂU HỌC</h1>
-    <h3>VIẾT TIẾN TRÌNH LÊN LỚP – KHÔNG CẦN AI</h3>
-    <p><i>Chụp ảnh SGK → GV nhập ý chính → App soạn kịch bản chuẩn</i></p>
+    <h3>KỊCH BẢN LÊN LỚP – LỜI DẪN CHI TIẾT TỪNG BƯỚC</h3>
+    <p><i>Không AI – Không lỗi – Dùng được ngay khi lên lớp</i></p>
     <p style="color:#555;"><b>✍️ Tác giả:</b> NGUYỄN VĂN DU – Giáo viên Tiểu học</p>
 </div>
 <hr>
 """, unsafe_allow_html=True)
 
-# ================== THÔNG TIN BÀI DẠY ==================
+# ================== THÔNG TIN ==================
 st.markdown("## 📝 THÔNG TIN BÀI DẠY")
 mon = st.selectbox("📚 Môn học", ["Tin học", "Công nghệ", "Toán", "Tiếng Việt"])
 lop = st.selectbox("🎓 Lớp", ["3", "4", "5"])
@@ -31,7 +31,7 @@ ten_bai = st.text_input("📖 Tên bài học")
 # ================== ẢNH SGK ==================
 st.markdown("## 📸 ẢNH SÁCH GIÁO KHOA (THAM KHẢO)")
 uploaded_images = st.file_uploader(
-    "Chụp hoặc tải NHIỀU ảnh trang SGK",
+    "Tải hoặc chụp nhiều trang SGK",
     type=["jpg", "jpeg", "png"],
     accept_multiple_files=True
 )
@@ -39,81 +39,105 @@ uploaded_images = st.file_uploader(
 if uploaded_images:
     cols = st.columns(3)
     for i, f in enumerate(uploaded_images):
-        img = Image.open(f)
         with cols[i % 3]:
-            st.image(img, use_column_width=True)
+            st.image(Image.open(f), use_column_width=True)
 
-# ================== NỘI DUNG CHÍNH ==================
-st.markdown("## ✍️ GIÁO VIÊN NHẬP NỘI DUNG CHÍNH")
+# ================== GV NHẬP NỘI DUNG ==================
+st.markdown("## ✍️ GIÁO VIÊN GHI NỘI DUNG TRỌNG TÂM (THEO SGK)")
 noidung = st.text_area(
-    "Ghi các ý chính của bài học (theo SGK):",
-    height=200,
-    placeholder="- Khái niệm...\n- Ví dụ...\n- Ghi nhớ..."
+    "Mỗi ý 1 dòng (ghi đúng SGK):",
+    height=180,
+    placeholder="Ví dụ:\n- Khái niệm máy tính\n- Các bộ phận chính\n- Lợi ích của máy tính"
 )
 
-# ================== TẠO TIẾN TRÌNH ==================
-if st.button("🚀 TẠO TIẾN TRÌNH LÊN LỚP"):
+# ================== TẠO KỊCH BẢN ==================
+if st.button("🚀 TẠO KỊCH BẢN LÊN LỚP (GV NÓI CHI TIẾT)"):
     if not ten_bai or not noidung:
-        st.warning("⚠️ Vui lòng nhập TÊN BÀI và NỘI DUNG CHÍNH")
+        st.warning("⚠️ Cần nhập TÊN BÀI và NỘI DUNG")
         st.stop()
 
     content = f"""
 BÀI: {ten_bai}
 MÔN: {mon} – LỚP: {lop}
 
---------------------------------
+=================================================
 I. KHỞI ĐỘNG (5 phút)
+
 🎤 GV nói:
-- Hôm nay chúng ta sẽ học bài: {ten_bai}.
-- GV nêu câu hỏi gợi mở liên quan đến bài học.
+- Các em ổn định chỗ ngồi, chuẩn bị sách vở.
+- Trước khi vào bài mới, cô/trò ta cùng trao đổi một chút nhé.
+- (GV đặt câu hỏi gợi mở liên quan bài học).
 
 👧👦 HS:
-- Lắng nghe, trả lời theo hiểu biết.
+- HS suy nghĩ và trả lời theo hiểu biết cá nhân.
+
+🔁 Nếu HS trả lời chưa đúng:
+- GV gợi ý nhẹ nhàng, đặt câu hỏi phụ.
 
 ✅ GV chốt:
-- Dẫn dắt vào bài mới.
+- Nhận xét câu trả lời của HS.
+- Giới thiệu: “Hôm nay chúng ta sẽ học bài: {ten_bai}”.
 
---------------------------------
+=================================================
 II. HÌNH THÀNH KIẾN THỨC (15 phút)
-🎤 GV nói:
-- GV giới thiệu nội dung chính của bài.
-- GV lần lượt trình bày từng ý:
 
+🎤 GV nói:
+- Các em mở sách, quan sát nội dung bài học.
+- Cô sẽ hướng dẫn từng phần, các em chú ý lắng nghe.
+
+👉 Nội dung chính:
 {noidung}
 
+🎤 GV hỏi:
+- Theo các em, nội dung trên cho ta biết điều gì?
+- Ai có thể nhắc lại ý chính?
+
 👧👦 HS:
-- Quan sát, lắng nghe.
-- Trả lời câu hỏi của giáo viên.
+- HS quan sát, suy nghĩ, trả lời.
+- Một số HS khác nhận xét, bổ sung.
+
+🔁 Nếu HS lúng túng:
+- GV đọc lại ý trong SGK, giải thích bằng lời dễ hiểu.
 
 ✅ GV chốt:
-- Nhấn mạnh kiến thức trọng tâm.
+- Khẳng định kiến thức đúng.
+- Nhấn mạnh nội dung cần ghi nhớ.
 
---------------------------------
+=================================================
 III. LUYỆN TẬP (10 phút)
+
 🎤 GV nói:
-- GV giao bài tập hoặc câu hỏi luyện tập.
-- Hướng dẫn HS thực hiện.
+- Bây giờ chúng ta cùng luyện tập để hiểu bài hơn.
+- GV nêu câu hỏi/bài tập liên quan nội dung vừa học.
 
 👧👦 HS:
-- Thực hành cá nhân / nhóm.
-- Trình bày kết quả.
+- HS làm việc cá nhân hoặc theo nhóm.
+- Trình bày kết quả trước lớp.
+
+🔁 Nếu HS làm sai:
+- GV hướng dẫn lại từng bước.
+- Cho HS làm lại.
 
 ✅ GV chốt:
-- Nhận xét, sửa sai, tuyên dương.
+- Nhận xét chung.
+- Tuyên dương HS làm tốt.
 
---------------------------------
+=================================================
 IV. VẬN DỤNG (5 phút)
+
 🎤 GV nói:
-- Yêu cầu HS vận dụng kiến thức vào tình huống thực tế.
+- Các em hãy liên hệ kiến thức vừa học với thực tế.
+- GV đặt câu hỏi: “Trong cuộc sống, em đã gặp nội dung này ở đâu?”
 
 👧👦 HS:
-- Trả lời, liên hệ thực tế.
+- HS nêu ví dụ thực tế.
 
 ✅ GV chốt:
-- Dặn dò, củng cố bài học.
+- Củng cố lại toàn bài.
+- Dặn dò HS về nhà ôn bài, chuẩn bị bài sau.
 """
 
-    st.markdown("## 📄 TIẾN TRÌNH LÊN LỚP")
+    st.markdown("## 📄 KỊCH BẢN LÊN LỚP (GV NÓI)")
     st.text(content)
 
     # ================== XUẤT WORD ==================
@@ -138,9 +162,9 @@ IV. VẬN DỤNG (5 phút)
     buf.seek(0)
 
     st.download_button(
-        "⬇️ Tải file Word (.docx)",
+        "⬇️ Tải file Word – Kịch bản GV nói",
         buf,
-        file_name=f"Tien_trinh_{ten_bai}.docx",
+        file_name=f"Kich_ban_GV_noi_{ten_bai}.docx",
         mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
     )
 
